@@ -44,7 +44,7 @@ fi;
 if { conda env list | grep 'ALICE'; } >/dev/null 2>&1; then
   echo "ALICE conda environment found."
 else
-  ERROR=$true
+  ERROR=true
   echo "ERROR: ALICE conda environment not found. Please follow installation instructions for ALICE or come to the 12:00 to 01:00 debugging session"
 fi;
 
