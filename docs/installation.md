@@ -14,3 +14,5 @@ $ conda env create -f vtc.yml
 
 Make sure [sox](http://sox.sourceforge.net/) is installed too.
 Once everything has been installed, you can apply the model by following [these instructions](../docs/applying.md).
+
+P.S.: Windows users should be able to follow the instructions above setting up a [WSL virtual machine](https://learn.microsoft.com/en-us/windows/wsl/install) first.
