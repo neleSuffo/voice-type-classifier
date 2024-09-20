@@ -22,6 +22,7 @@ The code mainly relies on pyannote-audio [[2]](https://github.com/pyannote/pyann
 2) [Applying](./docs/applying.md)
 3) [Evaluation](./docs/evaluations.md)
 4) [Going further](./docs/going_further.md)
+5) Still stuck or feeling lost? Check out our [IASCL24 tutorial](https://docs.google.com/presentation/d/1zs1SKic-acohLkMke2ymX65IVXBfcGj9i0blFE-04rc/edit?usp=sharing) (more extensive instructions): slides 9 to 20
 
 ### Awesome tools using our voice type classifier
 
