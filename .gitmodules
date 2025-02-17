@@ -1,4 +1,0 @@
-[submodule "pyannote-audio"]
-	path = pyannote-audio
-	url = https://github.com/neleSuffo/pyannote-audio
-	branch = voice_type_classifier
