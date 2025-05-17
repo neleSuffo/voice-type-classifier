@@ -1,33 +1,44 @@
-task:
-  params:
-    duration: 2.0
-    batch_size: 64
-    per_epoch: 1
-    labels_spec:
-      regular: ['kchi', 'och', 'mal', 'fem', 'ovh']
-      union:
-        speech: ['kchi', 'och', 'fem', 'mal', 'speech']
-  name: MultilabelDetection
 architecture:
+  name: pyannote.audio.models.PyanNet
   params:
-    sincnet:
-      out_channels: [256, 60, 60]
-      kernel_size: [251, 5, 5]
+    ff:
+      hidden_size:
+      - 128
+      - 128
     rnn:
-      hidden_size: 128
+      bidirectional: true
       dropout: 0
+      hidden_size: 128
       num_layers: 3
       unit: LSTM
-      bidirectional: True
-    ff:
-      hidden_size: [128, 128]
-  name: pyannote.audio.models.PyanNet
-scheduler:
-  name: CyclicScheduler
-  params:
-    learning_rate: auto
-    epochs_per_cycle: 14
+    sincnet:
+      kernel_size:
+      - 251
+      - 5
+      - 5
+      out_channels:
+      - 256
+      - 60
+      - 60
 feature_extraction:
   name: RawAudio
   params:
     sample_rate: 16000
+scheduler:
+  name: CyclicScheduler
+  params:
+    epochs_per_cycle: 14
+    learning_rate: auto
+task:
+  name: MultilabelDetection
+  params:
+    batch_size: 64
+    duration: 2.0
+    labels_spec:
+      regular:
+      - KCHI
+      - CHI
+      - MAL
+      - FEM
+      - SPEECH
+    per_epoch: 1
