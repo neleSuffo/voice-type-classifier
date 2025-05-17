@@ -6,9 +6,8 @@ database:
 task: frame-wise multi-label classification
 y:
   classes:
-  - kchi
-  - och
-  - mal
-  - fem
-  - ovh
-  - speech
+  - KCHI
+  - CHI
+  - MAL
+  - FEM
+  - SPEECH
