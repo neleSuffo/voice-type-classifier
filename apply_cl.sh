@@ -108,7 +108,7 @@ Protocols:
     # Commenting these 2 lines as grep can't be problematic on MAC distrib.
     #BEST_EPOCH=$(cat model/train/X.SpeakerDiarization.BBT2_LeaveOneDomainOut_paido.train/validate_average_detection_fscore/X.SpeakerDiarization.BBT2_LeaveOneDomainOut_paido.development/params.yml | grep -oP "(?<=epoch: )\d+")
     #BEST_EPOCH=$(printf %04d $BEST_EPOCH)
-    BEST_EPOCH=0155
+    BEST_EPOCH=0275
 
     VAL_DIR=$THISDIR/model/train/ChildLens.SpeakerDiarization.audio.train_cl/validate_average_detection_fscore/ChildLens.SpeakerDiarization.audio.development
 
@@ -121,7 +121,7 @@ Protocols:
         exit
     fi
 
-    classes=(kchi och mal fem ovh speech)
+    classes=(KCHI CHI MAL FEM SPEECH)
     for class in ${classes[*]}; do
         mv ${VAL_DIR}/apply/${BEST_EPOCH}/${bn}_protocol.SpeakerDiarization.All.test.$class.rttm $OUTPUT/$class.rttm
     done
