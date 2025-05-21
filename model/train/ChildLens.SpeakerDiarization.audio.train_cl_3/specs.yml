@@ -2,7 +2,7 @@ X:
   dimension: 1
 database:
   classes:
-  - ChildLens
+  - ChildLens_v2
 task: frame-wise multi-label classification
 y:
   classes:
