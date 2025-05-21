@@ -102,15 +102,15 @@ Protocols:
 
     export PYANNOTE_DATABASE_CONFIG=$THISDIR/pyannote_tmp_config/$bn/database.yml
 
-    OUTPUT=output_voice_type_classifier_cl_2/$bn/
-    mkdir -p output_voice_type_classifier_cl_2/$bn/
+    OUTPUT=output_voice_type_classifier_cl_3/$bn/
+    mkdir -p output_voice_type_classifier_cl_3/$bn/
 
     # Commenting these 2 lines as grep can't be problematic on MAC distrib.
     #BEST_EPOCH=$(cat model/train/X.SpeakerDiarization.BBT2_LeaveOneDomainOut_paido.train/validate_average_detection_fscore/X.SpeakerDiarization.BBT2_LeaveOneDomainOut_paido.development/params.yml | grep -oP "(?<=epoch: )\d+")
     #BEST_EPOCH=$(printf %04d $BEST_EPOCH)
-    BEST_EPOCH=0275
+    BEST_EPOCH=0151
 
-    VAL_DIR=$THISDIR/model/train/ChildLens.SpeakerDiarization.audio.train_cl/validate_average_detection_fscore/ChildLens.SpeakerDiarization.audio.development
+    VAL_DIR=$THISDIR/model/train/ChildLens.SpeakerDiarization.audio.train_cl_3/validate_average_detection_fscore/ChildLens.SpeakerDiarization.audio.development
 
     # Check current class is in classes (provided by the user or by default the KCHI CHI MAL FEM SPEECH)
     pyannote-audio mlt apply --$DEVICE --batch=$BATCH --subset=test --parallel=8 $VAL_DIR ${bn}_protocol.SpeakerDiarization.All
@@ -121,7 +121,7 @@ Protocols:
         exit
     fi
 
-    classes=(KCHI CHI MAL FEM SPEECH)
+    classes=(KCHI CDS OHS)
     for class in ${classes[*]}; do
         mv ${VAL_DIR}/apply/${BEST_EPOCH}/${bn}_protocol.SpeakerDiarization.All.test.$class.rttm $OUTPUT/$class.rttm
     done
