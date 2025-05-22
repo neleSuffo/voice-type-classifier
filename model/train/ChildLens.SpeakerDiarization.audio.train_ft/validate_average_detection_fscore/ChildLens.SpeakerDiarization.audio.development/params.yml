@@ -1,7 +1,7 @@
 CHI:
   detection_fscore: 0.2988114632632245
   params:
-    min_duration_off: 0.1
+    min_duration_off: 2
     min_duration_on: 0.1
     offset: 0.06516010765595086
     onset: 0.06516010765595086
@@ -10,7 +10,7 @@ CHI:
 FEM:
   detection_fscore: 0.5962178022835439
   params:
-    min_duration_off: 0.1
+    min_duration_off: 2
     min_duration_on: 0.1
     offset: 0.4191033547347491
     onset: 0.4191033547347491
@@ -19,7 +19,7 @@ FEM:
 KCHI:
   detection_fscore: 0.7875896597742819
   params:
-    min_duration_off: 0.1
+    min_duration_off: 2
     min_duration_on: 0.1
     offset: 0.3944308856332626
     onset: 0.3944308856332626
@@ -28,7 +28,7 @@ KCHI:
 MAL:
   detection_fscore: 0.7433205414334872
   params:
-    min_duration_off: 0.1
+    min_duration_off: 2
     min_duration_on: 0.1
     offset: 0.3496813527983909
     onset: 0.3496813527983909
@@ -37,7 +37,7 @@ MAL:
 SPEECH:
   detection_fscore: 0.898347982591121
   params:
-    min_duration_off: 0.1
+    min_duration_off: 2
     min_duration_on: 0.1
     offset: 0.41115365702424733
     onset: 0.41115365702424733
