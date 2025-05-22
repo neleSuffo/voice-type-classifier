@@ -1,32 +1,32 @@
 CDS:
-  detection_fscore: 0.6541052538803616
+  detection_fscore: 0.6723585946242402
   params:
     min_duration_off: 0.1
     min_duration_on: 0.1
-    offset: 0.44996000712164563
-    onset: 0.44996000712164563
+    offset: 0.3934701293839407
+    onset: 0.3934701293839407
     pad_offset: 0.0
     pad_onset: 0.0
 KCHI:
-  detection_fscore: 0.696911586646384
+  detection_fscore: 0.7464130322664324
   params:
     min_duration_off: 0.1
     min_duration_on: 0.1
-    offset: 0.34958167134787943
-    onset: 0.34958167134787943
+    offset: 0.35434633456590375
+    onset: 0.35434633456590375
     pad_offset: 0.0
     pad_onset: 0.0
 OHS:
-  detection_fscore: 0.4794305636360654
+  detection_fscore: 0.5301204905052277
   params:
     min_duration_off: 0.1
     min_duration_on: 0.1
-    offset: 0.14235541308020302
-    onset: 0.14235541308020302
+    offset: 0.15901516677271288
+    onset: 0.15901516677271288
     pad_offset: 0.0
     pad_onset: 0.0
-average_detection_fscore: 0.610149134720937
-epoch: 151
+average_detection_fscore: 0.6496307057986335
+epoch: 235
 labels_spec:
   intersection: {}
   regular:

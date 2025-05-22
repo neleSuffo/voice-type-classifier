@@ -102,8 +102,8 @@ Protocols:
 
     export PYANNOTE_DATABASE_CONFIG=$THISDIR/pyannote_tmp_config/$bn/database.yml
 
-    OUTPUT=output_voice_type_classifier_cl_2/$bn/
-    mkdir -p output_voice_type_classifier_cl_2/$bn/
+    OUTPUT=output_voice_type_classifier_cl/$bn/
+    mkdir -p output_voice_type_classifier_cl/$bn/
 
     # Commenting these 2 lines as grep can't be problematic on MAC distrib.
     #BEST_EPOCH=$(cat model/train/X.SpeakerDiarization.BBT2_LeaveOneDomainOut_paido.train/validate_average_detection_fscore/X.SpeakerDiarization.BBT2_LeaveOneDomainOut_paido.development/params.yml | grep -oP "(?<=epoch: )\d+")
