@@ -1,26 +1,18 @@
 architecture:
   name: pyannote.audio.models.PyanNet
   params:
-    ff:
-      hidden_size:
-      - 256
-      - 128
+    sincnet:
+      kernel_size: [129, 5, 5]
+      out_channels: [512, 128, 128]
+      instance_normalize: true
     rnn:
       bidirectional: true
       dropout: 0.2
       hidden_size: 256
       num_layers: 2
       unit: GRU
-    sincnet:
-      kernel_size:
-      - 129
-      - 5
-      - 5
-      out_channels:
-      - 512
-      - 128
-      - 128
-      instance_normalize: true
+    ff:
+      hidden_size: [256, 128]
 feature_extraction:
   name: RawAudio
   params:
