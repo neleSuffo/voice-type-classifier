@@ -1,4 +1,2 @@
 *.npy
-*.rttm
 pyannote_tmp_config/
-weights/
