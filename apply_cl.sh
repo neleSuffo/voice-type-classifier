@@ -106,9 +106,9 @@ Protocols:
     mkdir -p output_voice_type_classifier_cl/$bn/
 
     # Commenting these 2 lines as grep can't be problematic on MAC distrib.
-    #BEST_EPOCH=$(cat model/train/X.SpeakerDiarization.BBT2_LeaveOneDomainOut_paido.train/validate_average_detection_fscore/X.SpeakerDiarization.BBT2_LeaveOneDomainOut_paido.development/params.yml | grep -oP "(?<=epoch: )\d+")
+    #BEST_EPOCH=$(cat model/train/X.SpeakerDiarization.BBT2_LeaveOneDomainOut_paido.t rain/validate_average_detection_fscore/X.SpeakerDiarization.BBT2_LeaveOneDomainOut_paido.development/params.yml | grep -oP "(?<=epoch: )\d+")
     #BEST_EPOCH=$(printf %04d $BEST_EPOCH)
-    BEST_EPOCH=0275
+    BEST_EPOCH=0150
 
     VAL_DIR=$THISDIR/model/train/ChildLens.SpeakerDiarization.audio.train_cl/validate_average_detection_fscore/ChildLens.SpeakerDiarization.audio.development
 
