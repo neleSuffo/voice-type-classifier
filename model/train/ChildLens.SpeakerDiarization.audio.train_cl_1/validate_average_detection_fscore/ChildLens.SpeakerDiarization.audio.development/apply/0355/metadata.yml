@@ -1,8 +1,0 @@
-classes:
-- KCHI
-- CDS
-- OHS
-dimension: 3
-duration: 0.0126875
-start: 0.0
-step: 0.0016875
