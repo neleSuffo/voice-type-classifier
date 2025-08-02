@@ -2,7 +2,7 @@ class VTC:
     voice_types_list = ['KCHI', 'CHI', 'FEM', 'MAL', 'SPEECH']
 
     # Define constants and file paths
-    childlens_gt_df_file_path = "/home/nele_pauline_suffo/ProcessedData/audio_cls_input/annotations_gt_id_split.pkl"
+    childlens_gt_df_file_path = "/home/nele_pauline_suffo/ProcessedData/vtc_childlens/annotations_gt_id_split.pkl"
 
     rttm_og_01_file_path = "/home/nele_pauline_suffo/outputs/vtc/childlens_audio_test_01/all.rttm"
     rttm_og_2_file_path = "/home/nele_pauline_suffo/outputs/vtc/childlens_audio_test_2/all.rttm"
