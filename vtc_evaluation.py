@@ -32,21 +32,23 @@ RTTM_PATHS = {
 }
 
 
-def plot_annotations_vs_predictions(audio_file_name: str, hypothesis_type: str, time_window: list) -> None:
+def plot_annotations_vs_predictions(audio_file_name: str, hypothesis_type: str, time_window: list, save_path: str = None) -> None:
     """
     Plot ground truth annotations and model predictions for a given audio file and time window.
+    Optionally save the plot to a file.
 
     Parameters
     ----------
     audio_file_name : str
-        The name of the audio file
+        The name of the audio file (without extension)
     hypothesis_type : str
         Hypothesis type: 'og_01', 'og_2', 'ft_01', 'ft_2', 'cl_01', 'cl_2'.
     time_window : list
         Start and end time for the plot: [start_time, end_time].
+    save_path : str, optional
+        If provided, save the plot to this path.
     """
     gt_path = VTC.childlens_gt_df_file_path
-
     gt_df = pd.read_pickle(gt_path)
 
     if hypothesis_type not in HYPOTHESIS_PATHS:
@@ -55,8 +57,9 @@ def plot_annotations_vs_predictions(audio_file_name: str, hypothesis_type: str, 
     hypothesis_df = pd.read_pickle(HYPOTHESIS_PATHS[hypothesis_type])
     hypothesis_df['Voice_type'] = hypothesis_df['Voice_type'].str.upper()
     
-    gt = gt_df[gt_df['audio_file_name'] == audio_file_name]
-    pred = hypothesis_df[hypothesis_df['audio_file_name'] == audio_file_name]
+    # Accept both with and without extension, but prefer without
+    gt = gt_df[gt_df['audio_file_name'].str.replace('.MP4', '').str.replace('.mp4', '') == audio_file_name]
+    pred = hypothesis_df[hypothesis_df['audio_file_name'].str.replace('.MP4', '').str.replace('.mp4', '') == audio_file_name]
 
     num_categories = len(VTC.voice_types_list)
     fig_height_per_category = 0.5
@@ -131,9 +134,12 @@ def plot_annotations_vs_predictions(audio_file_name: str, hypothesis_type: str, 
 
     ax.set_xlim(time_window[0], time_window[1])
 
-    # Adjust layout to make space for the legend
-    plt.tight_layout(rect=[0, 0, 0.85, 1])
-    plt.show()
+    plt.tight_layout()
+    if save_path:
+        plt.savefig(save_path)
+        print(f"Plot saved to {save_path}")
+    else:
+        plt.show()
     
 def combine_pickles(folder_path: str, output_file_name: str) -> None:
     """
@@ -498,8 +504,11 @@ def compute_all_metrics_table() -> pd.DataFrame:
     return results_df
 
 def main():
-    parser = argparse.ArgumentParser(description="Compute VTC evaluation metrics for a given hypothesis type.")
+    parser = argparse.ArgumentParser(description="Compute VTC evaluation metrics for a given hypothesis type or plot annotations vs predictions.")
     parser.add_argument("--hypothesis_type", type=str, help="The type of hypothesis to evaluate. E.g., 'og_01', 'og_2', 'ft_01', etc. Use 'all' to compute a table of all metrics.")
+    parser.add_argument("--plot", action="store_true", help="If set, plot annotations vs predictions instead of computing metrics.")
+    parser.add_argument("--video_name", type=str, help="The video name (without extension) to plot.")
+    parser.add_argument("--time_window", type=str, help="Time window as start,end (e.g. 0,120)")
     args = parser.parse_args()
 
     # Pre-computation of all rttm files to pkl files
@@ -509,6 +518,15 @@ def main():
             rttm_to_dataframe(Path(rttm_path), output_path)
         else:
             print(f"Warning: RTTM file not found for '{rttm_type}' at {rttm_path}. Skipping conversion.")
+
+    if args.plot:
+        if not args.video_name or not args.hypothesis_type or not args.time_window:
+            print("Error: --plot requires --video_name, --hypothesis_type, and --time_window.")
+            return
+        time_window = [float(x) for x in args.time_window.split(",")]
+        output_plot = f"{args.video_name}_{args.hypothesis_type}_annotations_vs_predictions.png"
+        plot_annotations_vs_predictions(args.video_name, args.hypothesis_type, time_window, save_path=output_plot)
+        return
 
     print("\n--- Evaluation ---")
     if args.hypothesis_type == "all":
