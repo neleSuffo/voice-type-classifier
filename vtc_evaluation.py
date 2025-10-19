@@ -10,25 +10,29 @@ from pyannote.database.util import load_uem
 from typing import List, Optional
 import os
 import argparse
-from constants import VTC
+from constants import VoiceTypeClassifier, AudioClassification
 
 
 HYPOTHESIS_PATHS = {
-    'og_01': VTC.output_og_01_file_path,
-    'og_2': VTC.output_og_2_file_path,
-    'ft_01': VTC.output_ft_01_file_path,
-    'ft_2': VTC.output_ft_2_file_path,
-    'cl_01': VTC.output_cl_01_file_path,
-    'cl_2': VTC.output_cl_2_file_path,
+    'og_01': VoiceTypeClassifier.OUTPUT_OG_01_FILE_PATH,
+    'og_2': VoiceTypeClassifier.OUTPUT_OG_2_FILE_PATH,
+    'ft_01': VoiceTypeClassifier.OUTPUT_FT_01_FILE_PATH,
+    'ft_2': VoiceTypeClassifier.OUTPUT_FT_2_FILE_PATH,
+    'cl_01': VoiceTypeClassifier.OUTPUT_CL_01_FILE_PATH,
+    'cl_2': VoiceTypeClassifier.OUTPUT_CL_2_FILE_PATH,
+    'qt_01': AudioClassification.OUTPUT_QT_01_FILE_PATH,
+    'qt_2': AudioClassification.OUTPUT_QT_2_FILE_PATH,
 }
 
 RTTM_PATHS = {
-    'og_01': VTC.rttm_og_01_file_path,
-    'og_2': VTC.rttm_og_2_file_path,
-    'ft_01': VTC.rttm_ft_01_file_path,
-    'ft_2': VTC.rttm_ft_2_file_path,
-    'cl_01': VTC.rttm_cl_01_file_path,
-    'cl_2': VTC.rttm_cl_2_file_path,
+    'og_01': VoiceTypeClassifier.RTTM_OG_01_FILE_PATH,
+    'og_2': VoiceTypeClassifier.RTTM_OG_2_FILE_PATH,
+    'ft_01': VoiceTypeClassifier.RTTM_FT_01_FILE_PATH,
+    'ft_2': VoiceTypeClassifier.RTTM_FT_2_FILE_PATH,
+    'cl_01': VoiceTypeClassifier.RTTM_CL_01_FILE_PATH,
+    'cl_2': VoiceTypeClassifier.RTTM_CL_2_FILE_PATH,
+    'qt_01': AudioClassification.RTTM_QT_01_FILE_PATH,
+    'qt_2': AudioClassification.RTTM_QT_2_FILE_PATH,
 }
 
 
@@ -48,7 +52,15 @@ def plot_annotations_vs_predictions(audio_file_name: str, hypothesis_type: str, 
     save_path : str, optional
         If provided, save the plot to this path.
     """
-    gt_path = VTC.childlens_gt_df_file_path
+    if hypothesis_type in ['qt_01', 'qt_2']:
+        num_categories = len(AudioClassification.QUANTEX_CLASSES)
+        rttm_classes = AudioClassification.QUANTEX_CLASSES
+        gt_path = AudioClassification.QUANTEX_GT_FILE_PATH
+    else:
+        num_categories = len(VoiceTypeClassifier.CHILDLENS_CLASSES)
+        rttm_classes = VoiceTypeClassifier.CHILDLENS_CLASSES
+        gt_path = VoiceTypeClassifier.CHILDLENS_GT_FILE_PATH
+
     gt_df = pd.read_pickle(gt_path)
 
     if hypothesis_type not in HYPOTHESIS_PATHS:
@@ -61,7 +73,6 @@ def plot_annotations_vs_predictions(audio_file_name: str, hypothesis_type: str, 
     gt = gt_df[gt_df['audio_file_name'].str.replace('.MP4', '').str.replace('.mp4', '') == audio_file_name]
     pred = hypothesis_df[hypothesis_df['audio_file_name'].str.replace('.MP4', '').str.replace('.mp4', '') == audio_file_name]
 
-    num_categories = len(VTC.voice_types_list)
     fig_height_per_category = 0.5
     min_fig_height = 2.0
     figure_height = max(min_fig_height, num_categories * fig_height_per_category)
@@ -77,7 +88,7 @@ def plot_annotations_vs_predictions(audio_file_name: str, hypothesis_type: str, 
     yticks_positions = []
     yticklabels_text = []
 
-    for i, vt in enumerate(VTC.voice_types_list[::-1]):
+    for i, vt in enumerate(rttm_classes[::-1]):
         category_center_y = i * row_step
         
         current_gt_bars = gt[gt['Voice_type'] == vt]
@@ -237,16 +248,21 @@ def compute_metrics(hypothesis_type: str) -> None:
     Parameters
     ----------
     hypothesis_type : str
-        The type of hypothesis to compute metrics for. Options are 'og_01', 'og_2', 'ft_01', 'ft_2', 'cl_01', 'cl_2', 'cl_v3_01', or 'cl_v3_2'.
+        The type of hypothesis to compute metrics for. Options are 'og_01', 'og_2', 'ft_01', 'ft_2', 'cl_01', 'cl_2', 'qt_01', 'qt_2'.
     """
     if hypothesis_type not in HYPOTHESIS_PATHS:
         raise ValueError(f"Invalid hypothesis type: '{hypothesis_type}'. Choose from {list(HYPOTHESIS_PATHS.keys())}.")
     
     hypothesis_path = HYPOTHESIS_PATHS[hypothesis_type]
 
-
-    reference_path = VTC.childlens_gt_df_file_path
-        
+    if hypothesis_type in ['qt_01', 'qt_2']:
+        reference_path = AudioClassification.QUANTEX_GT_FILE_PATH
+        uem_file_path = AudioClassification.UEM_QUANTEX_FILE_PATH
+        rttm_classes = AudioClassification.QUANTEX_CLASSES
+    else:
+        reference_path = VoiceTypeClassifier.CHILDLENS_GT_FILE_PATH
+        uem_file_path = VoiceTypeClassifier.UEM_CHILDLENS_FILE_PATH
+        rttm_classes = VoiceTypeClassifier.CHILDLENS_VOICE_TYPES
     try:
         hypothesis_df = pd.read_pickle(hypothesis_path)
         reference_df = pd.read_pickle(reference_path)
@@ -268,7 +284,6 @@ def compute_metrics(hypothesis_type: str) -> None:
     reference_df = reference_df[reference_df['audio_file_name'].isin(annotated_files)]
     predictions_df = hypothesis_df[hypothesis_df['audio_file_name'].isin(annotated_files)]
     
-    uem_file_path = "/home/nele_pauline_suffo/ProcessedData/vtc_childlens/complete.uem"
     try: 
         all_video_uems = load_uem(uem_file_path)
     except FileNotFoundError:
@@ -282,7 +297,7 @@ def compute_metrics(hypothesis_type: str) -> None:
     
     class_metrics_results = {
         vt: {metric_name: [] for metric_name in metric_names}
-        for vt in VTC.voice_types_list
+        for vt in rttm_classes
     }
 
     for video_filename in annotated_files:
@@ -295,7 +310,7 @@ def compute_metrics(hypothesis_type: str) -> None:
         
         current_video_uem: Optional[Timeline] = all_video_uems.get(video_filename)
         
-        for voice_type in VTC.voice_types_list:
+        for voice_type in rttm_classes:
             ref_class_video_df = ref_video_df[ref_video_df['Voice_type'] == voice_type]
             pred_class_video_df = pred_video_df[pred_video_df['Voice_type'] == voice_type]
 
@@ -318,7 +333,7 @@ def compute_metrics(hypothesis_type: str) -> None:
     
     overall_macro_f1_components = []
 
-    for voice_type in VTC.voice_types_list:
+    for voice_type in rttm_classes:
         print(f"Class '{voice_type.upper()}':")
         for metric_name in metric_names:
             metric_values = class_metrics_results[voice_type][metric_name]
@@ -352,20 +367,11 @@ def compute_all_metrics_table() -> pd.DataFrame:
         A DataFrame where rows are hypothesis types and columns are metrics 
         (e.g., KCHI_precision, KCHI_recall, ..., Macro_F1_Score).
     """
-    all_hypothesis_types = ['og_01', 'og_2', 'ft_01', 'ft_2', 'cl_01', 'cl_2',]
-    
-    hypothesis_paths_config = {
-        'og_01': output_og_01_file_path,
-        'og_2': output_og_2_file_path,
-        'ft_01': output_ft_01_file_path,
-        'ft_2': output_ft_2_file_path,
-        'cl_01': output_cl_01_file_path,
-        'cl_2': output_cl_2_file_path,
-    }
+    all_hypothesis_types = ['og_01', 'og_2', 'ft_01', 'ft_2', 'cl_01', 'cl_2']
 
-    reference_df_global = pd.read_pickle(VTC.childlens_gt_df_file_path)
+    reference_df_global = pd.read_pickle(VoiceTypeClassifier.CHILDLENS_GT_FILE_PATH)
 
-    uem_file_path = "/home/nele_pauline_suffo/ProcessedData/vtc_childlens/complete.uem"
+    uem_file_path = VoiceTypeClassifier.UEM_CHILDLENS_FILE_PATH
     try:
         all_video_uems_global = load_uem(uem_file_path)
     except FileNotFoundError:
@@ -378,7 +384,7 @@ def compute_all_metrics_table() -> pd.DataFrame:
     collected_results = []
 
     for hypothesis_type in all_hypothesis_types:
-        hypothesis_path = hypothesis_paths_config[hypothesis_type]
+        hypothesis_path = HYPOTHESIS_PATHS[hypothesis_type]
         
         try:
             # First, check if the RTTM file exists and convert it
@@ -395,7 +401,7 @@ def compute_all_metrics_table() -> pd.DataFrame:
         except (FileNotFoundError, ValueError) as e:
             print(f"Warning: An error occurred processing {hypothesis_type}. Skipping. Details: {e}")
             row_data = {'Hypothesis': hypothesis_type}
-            for vt in VTC.voice_types_list:
+            for vt in VoiceTypeClassifier.CHILDLENS_VOICE_TYPES:
                 for mn in metric_names:
                     row_data[f"{vt}_{mn}"] = np.nan
             row_data['Macro_F1_Score'] = np.nan
@@ -414,7 +420,7 @@ def compute_all_metrics_table() -> pd.DataFrame:
         if not annotated_files:
             print(f"Warning: No common audio files found for '{hypothesis_type}'. Metrics will be NaN.")
             row_data = {'Hypothesis': hypothesis_type}
-            for vt in VTC.voice_types_list:
+            for vt in VoiceTypeClassifier.CHILDLENS_VOICE_TYPES:
                 for mn in metric_names:
                     row_data[f"{vt}_{mn}"] = np.nan
             row_data['Macro_F1_Score'] = np.nan
@@ -426,7 +432,7 @@ def compute_all_metrics_table() -> pd.DataFrame:
 
         class_metrics_results = {
             vt: {metric_name: [] for metric_name in metric_names}
-            for vt in VTC.voice_types_list
+            for vt in VoiceTypeClassifier.CHILDLENS_VOICE_TYPES
         }
 
         for video_filename in annotated_files:
@@ -438,7 +444,7 @@ def compute_all_metrics_table() -> pd.DataFrame:
             
             current_video_uem: Optional[Timeline] = all_video_uems_global.get(video_filename)
 
-            for voice_type in VTC.voice_types_list:
+            for voice_type in VoiceTypeClassifier.CHILDLENS_VOICE_TYPES:
                 ref_class_video_df = ref_video_df[ref_video_df['Voice_type'] == voice_type]
                 pred_class_video_df = pred_video_df[pred_video_df['Voice_type'] == voice_type]
 
@@ -460,7 +466,7 @@ def compute_all_metrics_table() -> pd.DataFrame:
         current_hypothesis_metrics = {'Hypothesis': hypothesis_type}
         overall_macro_f1_components = []
 
-        for voice_type in VTC.voice_types_list:
+        for voice_type in VoiceTypeClassifier.CHILDLENS_VOICE_TYPES:
             for metric_name in metric_names:
                 metric_values = class_metrics_results[voice_type][metric_name]
                 valid_metric_values = [v for v in metric_values if not pd.isna(v)]
@@ -494,7 +500,7 @@ def compute_all_metrics_table() -> pd.DataFrame:
         results_df = results_df.set_index('Hypothesis')
         
         columns_ordered = []
-        for vt in VTC.voice_types_list:
+        for vt in VoiceTypeClassifier.CHILDLENS_VOICE_TYPES:
             for mn in metric_names:
                 columns_ordered.append(f"{vt}_{mn}")
         columns_ordered.append('Macro_F1_Score')
@@ -524,7 +530,9 @@ def main():
             print("Error: --plot requires --video_name, --hypothesis_type, and --time_window.")
             return
         time_window = [float(x) for x in args.time_window.split(",")]
-        output_plot = f"{args.video_name}_{args.hypothesis_type}_annotations_vs_predictions.png"
+        output_dir = Path("output_plots")
+        mkdirs = output_dir.mkdir(parents=True, exist_ok=True)
+        output_plot = output_dir / f"{args.video_name}_{args.hypothesis_type}_annotations_vs_predictions.png"
         plot_annotations_vs_predictions(args.video_name, args.hypothesis_type, time_window, save_path=output_plot)
         return
 
