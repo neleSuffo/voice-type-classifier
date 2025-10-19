@@ -1,3 +1,5 @@
 *.npy
 pyannote_tmp_config/
 apply/
+*.pt
+*.png
