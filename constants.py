@@ -30,8 +30,8 @@ class AudioClassification:
     QUANTEX_GT_FILE_PATH = "/home/nele_pauline_suffo/ProcessedData/audio_cls_input/annotations_gt_id_split.pkl"
     UEM_QUANTEX_FILE_PATH = "/home/nele_pauline_suffo/ProcessedData/audio_cls_input/complete.uem"
     
-    RTTM_QUANTEX_01_FILE_PATH = "/home/nele_pauline_suffo/projects/voice-type-classifier/output_voice_type_classifier/childlens_audio_three_classes_test/all.rttm"
-    RTTM_QT_01_FILE_PATH = "/home/nele_pauline_suffo/projects/voice-type-classifier/output_voice_type_classifier/childlens_audio_three_classes_test_01/all.rttm"
-    RTTM_QT_2_FILE_PATH = "/home/nele_pauline_suffo/projects/voice-type-classifier/output_voice_type_classifier/childlens_audio_three_classes_test_2/all.rttm"
+    RTTM_QUANTEX_01_FILE_PATH = "/home/nele_pauline_suffo/projects/voice-type-classifier/output_voice_type_classifier_qt/childlens_audio_three_classes_test/all.rttm"
+    RTTM_QT_01_FILE_PATH = "/home/nele_pauline_suffo/projects/voice-type-classifier/output_voice_type_classifier_qt/childlens_audio_three_classes_test_01/all.rttm"
+    RTTM_QT_2_FILE_PATH = "/home/nele_pauline_suffo/projects/voice-type-classifier/output_voice_type_classifier_qt/childlens_audio_three_classes_test_2/all.rttm"
     OUTPUT_QT_01_FILE_PATH = "/home/nele_pauline_suffo/outputs/audio_classification/vtc_three_classes_test_01.pkl"
     OUTPUT_QT_2_FILE_PATH = "/home/nele_pauline_suffo/outputs/audio_classification/vtc_three_classes_test_2.pkl"
